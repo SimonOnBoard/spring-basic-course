@@ -43,6 +43,7 @@ public class User {
             cascade = CascadeType.ALL)
     private List<Cookie> cookieList;
 
+    // TODO: 27.02.2021 - State
     private boolean proved;
 
     private String currentConfirmationCode;

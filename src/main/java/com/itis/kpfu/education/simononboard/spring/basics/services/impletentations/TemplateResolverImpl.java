@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Map;
 
 /**
@@ -25,16 +24,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TemplateResolverImpl implements TemplateResolver {
     private final Configuration configuration;
-
-    @Override
-    public void process(String name, Map<String, String> root, Writer writer) {
-        try {
-            Template t = configuration.getTemplate(name);
-            t.process(root, writer);
-        } catch (IOException | TemplateException e) {
-            throw new IllegalStateException(e);
-        }
-    }
 
     @Override
     public String process(String name, Map<String, String> root) {
