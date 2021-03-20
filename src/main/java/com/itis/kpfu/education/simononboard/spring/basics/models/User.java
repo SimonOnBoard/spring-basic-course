@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.List;
@@ -23,6 +26,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Data
+@EntityListeners(AuditingEntityListener.class)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,14 +41,39 @@ public class User {
     @Column(name = "username", nullable = false)
     private String username;
 
-    @OneToMany(mappedBy = "user",
-            orphanRemoval = true,
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
-    private List<Cookie> cookieList;
+    @Column(name = "created_by")
+    @CreatedBy
+    private String createdBy;
 
-    // TODO: 27.02.2021 - State
-    private boolean proved;
+    @Column(name = "modified_by")
+    @LastModifiedBy
+    private String modifiedBy;
+
+    @Enumerated(value = EnumType.STRING)
+    private State state;
+
+    @Enumerated(value = EnumType.STRING)
+    private Role role;
+
+    public enum State {
+        ACTIVE, BANNED, INACTIVE
+    }
+
+    public enum Role {
+        USER, ADMIN
+    }
+
+    public boolean isActive() {
+        return this.state == State.ACTIVE;
+    }
+
+    public boolean isBanned() {
+        return this.state == State.BANNED;
+    }
+
+    public boolean isAdmin() {
+        return this.role == Role.ADMIN;
+    }
 
     private String currentConfirmationCode;
 
@@ -56,6 +85,8 @@ public class User {
         return User.builder()
                 .email(form.getEmail())
                 .username(form.getUsername())
+                .state(State.INACTIVE)
+                .role(Role.USER)
                 .build();
     }
 }

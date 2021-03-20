@@ -15,6 +15,7 @@
 <#else>
 </#if>
 <form action="/signUp" method="post">
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
     <input name="email" type="email" placeholder="EMAIL"/>
     <input name="password" type="password" placeholder="PASSWORD"/>
     <input name="username" type="text" placeholder="USERNAME"/>

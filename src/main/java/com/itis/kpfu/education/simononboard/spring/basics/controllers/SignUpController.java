@@ -2,11 +2,9 @@ package com.itis.kpfu.education.simononboard.spring.basics.controllers;
 
 import com.itis.kpfu.education.simononboard.spring.basics.dto.UserDto;
 import com.itis.kpfu.education.simononboard.spring.basics.dto.forms.SignUpForm;
-import com.itis.kpfu.education.simononboard.spring.basics.services.interfaces.CookieService;
 import com.itis.kpfu.education.simononboard.spring.basics.services.interfaces.MailService;
 import com.itis.kpfu.education.simononboard.spring.basics.services.interfaces.SignUpService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,32 +30,22 @@ import java.util.stream.Collectors;
 @RequestMapping("/signUp")
 @RequiredArgsConstructor
 public class SignUpController {
-    private final CookieService cookieService;
     private final SignUpService signUpService;
     private final MailService mailService;
 
-    @Value("${auth.user.redirect.url}")
-    private String authUserRedirectUrl;
-
+    @PermitAll
     @GetMapping
-    public String getSignUpPage(@CookieValue(value = "AuthCookie", required = false) String cookieValue,
-                                @RequestParam(value = "error", required = false) String error,
+    public String getSignUpPage(@RequestParam(value = "error", required = false) String error,
                                 Model model) {
-        if (cookieService.checkCookie(cookieValue)) {
-            return authUserRedirectUrl;
-        }
         model.addAttribute("error", error);
         return "sign_up_page";
     }
 
+    @PermitAll
     @PostMapping
-    public String signUp(@CookieValue(value = "AuthCookie", required = false) String cookieValue,
-                         @Valid SignUpForm form,
+    public String signUp(@Valid SignUpForm form,
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes) {
-        if (cookieService.checkCookie(cookieValue)) {
-            return authUserRedirectUrl;
-        }
         if (bindingResult.hasErrors()) {
             List<String> errorsList = bindingResult.getAllErrors().stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)

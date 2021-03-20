@@ -9,14 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-/**
- * Created by IntelliJ IDEA.
- * User:  SimonOnBoard
- * Project:  spring-basic-course
- * Package:  com.itis.kpfu.education.simononboard.spring.basics.services.impletentations
- * Date:  27.02.2021
- * Time:  0:03
- */
 @Service
 @RequiredArgsConstructor
 public class ConfirmationServiceImpl implements ConfirmationService {
@@ -27,7 +19,8 @@ public class ConfirmationServiceImpl implements ConfirmationService {
         Optional<User> userCandidate = usersRepository.findByCurrentConfirmationCode(code);
         if (userCandidate.isPresent()) {
             User user = userCandidate.get();
-            user.setProved(true);
+            if(user.isActive()) throw new IllegalArgumentException("User is already activated");
+            user.setState(User.State.ACTIVE);
             usersRepository.save(user);
         }
         return userCandidate.isPresent();

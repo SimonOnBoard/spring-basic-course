@@ -1,48 +1,45 @@
 package com.itis.kpfu.education.simononboard.spring.basics.configuration;
 
+import com.itis.kpfu.education.simononboard.spring.basics.services.impletentations.AuditorAwareImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.servlet.annotation.MultipartConfig;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * Created by IntelliJ IDEA.
- * User:  SimonOnBoard
- * Project:  spring-basic-course
- * Package:  com.itis.kpfu.education.simononboard.spring.basics.configuration
- * Date:  26.02.2021
- * Time:  10:55
- */
-
 @Configuration
 @PropertySource(value = "classpath:/application.properties")
 @RequiredArgsConstructor
+@EnableJpaAuditing(auditorAwareRef="auditorProvider")
 public class ApplicationContextConfig {
     private final Environment environment;
 
-    // TODO: 26.02.2021 - посмореть разницу между шаблонным и абстрактным методом
+    @Bean
+    public AuditorAware<String> auditorProvider() {
+        return new AuditorAwareImpl();
+    }
+
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // TODO: 26.02.2021 - добавить hikari connection pool
-
     @Bean
     public ExecutorService executorService() {
-        int i = Runtime.getRuntime().availableProcessors();
-        return Executors.newFixedThreadPool(i);
+        return Executors.newFixedThreadPool(12);
     }
 
     @Bean
@@ -60,7 +57,7 @@ public class ApplicationContextConfig {
         mailSender.setPort(587);
 
         mailSender.setUsername("testsamplexx@gmail.com");
-        mailSender.setPassword("qwertsdfghcvbnm");
+        mailSender.setPassword("qqewretry");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
