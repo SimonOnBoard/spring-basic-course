@@ -14,7 +14,6 @@ import org.springframework.security.web.authentication.rememberme.JdbcTokenRepos
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.filter.GenericFilterBean;
 
 import javax.sql.DataSource;
 
@@ -24,16 +23,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsService userDetailsService;
     private final DataSource dataSource;
-    private final GenericFilterBean redirectFilter;
 
     public SecurityConfig(PasswordEncoder passwordEncoder,
                           @Qualifier("customUserDetailsService") UserDetailsService userDetailsService,
-                          DataSource dataSource,
-                          @Qualifier("profileRedirectFilter") MyAuthenticationFilter redirectFilter) {
+                          DataSource dataSource) {
         this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
         this.dataSource = dataSource;
-        this.redirectFilter = redirectFilter;
     }
 
     @Override
@@ -53,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .rememberMe()
                 .rememberMeParameter("remember-me").tokenRepository(persistentTokenRepository())
                 .and()
-                .addFilterBefore(redirectFilter, BasicAuthenticationFilter.class);
+                .addFilterBefore(new MyAuthenticationFilter(), BasicAuthenticationFilter.class);
     }
 
     @Override

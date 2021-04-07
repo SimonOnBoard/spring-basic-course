@@ -12,8 +12,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.annotation.MultipartConfig;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -57,7 +57,7 @@ public class ApplicationContextConfig {
         mailSender.setPort(587);
 
         mailSender.setUsername("testsamplexx@gmail.com");
-        mailSender.setPassword("qqewretry");
+        mailSender.setPassword("qwefghzxcasdfgh");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
@@ -68,4 +68,10 @@ public class ApplicationContextConfig {
 
         return mailSender;
     }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
 }
