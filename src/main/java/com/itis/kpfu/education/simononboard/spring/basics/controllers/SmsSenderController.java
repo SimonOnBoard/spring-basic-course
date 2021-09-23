@@ -13,7 +13,6 @@ import javax.annotation.security.PermitAll;
 
 @RestController
 @RequiredArgsConstructor
-@Slf4j
 public class SmsSenderController {
     private final SmsSender smsSender;
 
